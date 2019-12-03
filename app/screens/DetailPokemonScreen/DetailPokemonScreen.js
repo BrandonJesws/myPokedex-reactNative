@@ -1,15 +1,15 @@
-import React, {useState, useEffect} from 'react'
-import { View, Text, StyleSheet, Image } from 'react-native'
+import React, {useState, useEffect} from 'react';
+import { View, Text, StyleSheet, Image } from 'react-native';
+import { useSelector } from "react-redux";
 import axios from 'axios';
 
 const DetailPokemonScreen = ({navigation}) => {
-    const name = navigation.getParam('name');
-    const id = navigation.getParam('id');
-    const sprite = navigation.getParam('sprite');
+    //Redux
+    const pokemonid = useSelector(state => state.dataApp.id);
 
     const [pokemonData, setPokemonData] = useState({});
 
-    const url = `https://pokeapi.co/api/v2/pokemon/${id}/`;
+    const url = `https://pokeapi.co/api/v2/pokemon/${pokemonid}/`;
 
     useEffect(() => {
         axios.get(url).then(({data}) => {
@@ -21,20 +21,21 @@ const DetailPokemonScreen = ({navigation}) => {
                     specialAttack: data.stats[2].base_stat,
                     defense: data.stats[3].base_stat,
                     attack: data.stats[4].base_stat,
-                    hp: data.stats[5].base_stat
+                    hp: data.stats[5].base_stat,
+                    sprite: {uri: data.sprites.front_default}
                 }
                 setPokemonData(pokemonDetail);
                
         })
-    }, []);
+    }, [pokemonid]);
 
     return (
         <View style={styles.content}>
             <View style={{flex: 1}}>
-                <Text style={{color: "#000", textAlign: "left",  fontWeight: "bold", fontSize: 25}}>#{id}  {name}</Text>
+                <Text style={{color: "#000", textAlign: "left",  fontWeight: "bold", fontSize: 25}}>#{pokemonid}</Text>
             </View>
             <View style={{flex: 4}}>
-                <Image source={sprite} style={{height: 150, width: 150 }}></Image>
+                <Image source={pokemonData.sprite} style={{height: 150, width: 150 }}></Image>
             </View>
             <View style={{flex: 1}}>
                 <Text style={styles.info}>Type: {pokemonData.type}</Text>
@@ -66,6 +67,16 @@ const DetailPokemonScreen = ({navigation}) => {
         </View>
     )
 }
+
+DetailPokemonScreen.navigationOptions = ({navigation}) => ( 
+    {
+        title:  navigation.getParam('name'),
+        headerStyle: {
+            backgroundColor: '#BBDBF3',
+            height: 40 
+        }
+    }
+)
 
 const styles = StyleSheet.create({
     content: {

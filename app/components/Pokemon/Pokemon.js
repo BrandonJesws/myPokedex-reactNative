@@ -12,7 +12,7 @@ const Pokemon = ({id, name, sprite, onPress}) => {
                 <Image source={sprite} style={{ height:'100%', width: '25%'}} />
             </View>
             <Button
-                title = "Detalles"
+                title = "Details"
                 onPress = {onPress}
                 color = "#2169a1"
                 />
